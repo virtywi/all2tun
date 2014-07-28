@@ -2,7 +2,7 @@ all2tun
 =======
 
 It is a shell script that enables rerouting all traffic (TCP and UDP) to ssh tunnel though socks5 proxy. It is just automation of use badvpn tun2socks proxifier.
-For more details about badvpn please go to authors's homepage  https://code.google.com/p/badvpn/ or  github https://github.com/ambrop72/badvpn
+For more details about badvpn please go to author's homepage  https://code.google.com/p/badvpn/ or  github https://github.com/ambrop72/badvpn
 
 I create the script mostly for usage by myself but if it will be useful for somebody else - it'll be great !
 
