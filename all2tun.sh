@@ -11,7 +11,8 @@
 #	4) config file for the fingerprint, IP and (maybe) other stuff storing
 #	5) "debug mode" and "silent mode"
 #	6) to be ready for starting from crontab
-#	7) ...
+#	7) to understand - what about IPv6 ?
+#	?) ...
 # 
 ######################################################################################
 
