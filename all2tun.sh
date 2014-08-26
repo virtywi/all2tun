@@ -11,7 +11,8 @@
 #	4) config file for the fingerprint, IP and (maybe) other stuff storing
 #	5) "debug mode" and "silent mode"
 #	6) to be ready for starting from crontab
-#	7) to understand - what about IPv6 ?
+#	7) need to check if addr is absent and stop with error exit code
+#	*) to understand - what about IPv6 ?
 #	?) ...
 # 
 ######################################################################################
@@ -38,6 +39,9 @@ then
   echo "usage: sudo `basename $0` server_addr or IP [-u for udpgw upload to the sever]\n if you need to change something else - go inside and edit variables and the code :)"
   exit $E_BADARGS
 fi
+
+#echo "$(dirname $0)"
+cd $(dirname $0)
 
 if echo $1 | grep -E "^[0-9]{1,3}(\.[0-9]{1,3}){3}$" > /dev/null
 then
@@ -97,4 +101,6 @@ echo "$? *****"
 ip route replace $SERVER_IP via $ORIGINAL_GW metric 5
 ip route del default
 ip route add default via $TUN_GW metric 6
+
+cd - >/dev/null
 
