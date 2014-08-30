@@ -17,7 +17,7 @@
 # 
 ######################################################################################
 
-CON_FILE="/etc/NetworkManager/system-connections/Auto Ethernet"
+CON_FILE="/etc/NetworkManager/system-connections/Wired connection 1"
 SSH_KEY="keyfile"
 UDPGW_FILE="udpgw"
 TUN2SOCKS_FILE="tun2socks"
@@ -28,7 +28,7 @@ TUN_GW="10.10.0.2"
 TUN_MASK="255.255.255.0"
 TUN_USER="nobody"
 SERVER_PORT="443"
-SOCKS_PORT="5250"
+SOCKS_PORT="5350"
 UDPGW_REMOTE_SERVER_PORT="7300"
 
 # you outside connection gateway
@@ -62,8 +62,8 @@ SERVER_CMD="/tmp/$UDPGW_FILE --listen-addr 127.0.0.1:$UDPGW_REMOTE_SERVER_PORT &
 if [ "$2" = "-u" ]
 then
 	echo "udpgw will be uploaded to the server and started"
-	su $TUN_USER -c "scp -i $SSH_KEY -P $SERVER_PORT $UDPGW_FILE root@$SERVER_IP:/tmp/"
-	su $TUN_USER -c "ssh -i $SSH_KEY root@$SERVER_IP -p $SERVER_PORT $SERVER_CMD"
+	su -s /bin/sh $TUN_USER -c "scp -i $SSH_KEY -P $SERVER_PORT $UDPGW_FILE root@$SERVER_IP:/tmp/"
+	su -s /bin/sh $TUN_USER -c "ssh -i $SSH_KEY root@$SERVER_IP -p $SERVER_PORT $SERVER_CMD"
 fi
 
 
@@ -77,14 +77,14 @@ fi
 
 ifconfig $TUN_DEV $TUN_IP netmask $TUN_MASK
 
-SSH_CMDLN="ssh -i $SSH_KEY -fNC -D localhost:$SOCKS_PORT root@$SERVER_IP -p $SERVER_PORT -o ServerAliveInterval=5 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes"
+SSH_CMDLN="ssh -i $SSH_KEY -fNC -D localhost:$SOCKS_PORT root@$SERVER_IP -p $SERVER_PORT -o ServerAliveInterval=5 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes -o StrictHostKeyChecking=no"
 #SSH_CMDLN="ssh -fNC -D localhost:$SOCKS_PORT root@$SERVER_IP -p $SERVER_PORT -o ServerAliveInterval=5 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes"
 if pgrep -xf "$SSH_CMDLN" 
 then
 	echo "ssh tunnel already exist"
 else
 	echo "ssh tunnel will be started"
-	su $TUN_USER -c "$SSH_CMDLN"
+	su -s /bin/sh $TUN_USER -c "$SSH_CMDLN"
 fi
 echo "$? ****"
 
@@ -95,7 +95,7 @@ TUN2SOCKS_CMDLN="$TUN2SOCKS_FILE --tundev $TUN_DEV --netif-ipaddr $TUN_GW --neti
 pkill -x $TUN2SOCKS_FILE
 #ps -AFww | grep $TUN2SOCKS_FILE
 
-su $TUN_USER -c "./$TUN2SOCKS_CMDLN"
+su -s /bin/sh $TUN_USER -c "./$TUN2SOCKS_CMDLN"
 echo "$? *****"
 
 ip route replace $SERVER_IP via $ORIGINAL_GW metric 5
